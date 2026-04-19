@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>食品營養華語文獻閱讀II — 期中考</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#085041;--green-mid:#1D9E75;--green-light:#E1F5EE;--green-pale:#F0FAF6;
+  --gray:#888780;--gray-light:#D3D1C7;--gray-pale:#F8F7F4;
+  --text:#2C2C2A;--muted:#5F5E5A;
+  --red:#A32D2D;--red-light:#FCEBEB;
+  --amber:#854F0B;--amber-light:#FAEEDA;
+  --r:12px;--r-sm:8px;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Noto Sans TC',sans-serif;color:var(--text);background:var(--gray-pale);min-height:100vh;padding-bottom:calc(80px + var(--safe-b))}
+
+.header{background:var(--green);padding:20px 16px 16px;text-align:center;position:sticky;top:0;z-index:100}
+.header-title{font-family:'Noto Serif TC',serif;font-size:1.1rem;font-weight:700;color:#fff;letter-spacing:.04em}
+.header-sub{font-size:.72rem;color:#9FE1CB;margin-top:4px}
+
+.progress-wrap{padding:12px 16px 0}
+.progress-bar-bg{background:var(--gray-light);border-radius:4px;height:5px}
+.progress-bar{background:var(--green-mid);height:5px;border-radius:4px;transition:width .4s;width:0%}
+.progress-label{font-size:11px;color:var(--muted);text-align:right;margin-top:4px}
+
+.container{padding:12px 12px 0;max-width:600px;margin:0 auto}
+
+.card{background:#fff;border-radius:var(--r);border:1px solid #E8E6DF;margin-bottom:12px;overflow:hidden}
+.card-header{display:flex;align-items:center;gap:8px;padding:14px 16px 12px;border-bottom:1px solid var(--green-light)}
+.badge{background:var(--green-light);color:var(--green);font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;white-space:nowrap;letter-spacing:.03em}
+.card-header-title{font-family:'Noto Serif TC',serif;font-size:.9rem;color:var(--text);line-height:1.4}
+
+.passage{background:var(--green-pale);border-left:3px solid var(--green-mid);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:12px 14px;margin:0 -16px 16px;font-size:13.5px;line-height:1.95;color:#3a3a38}
+.passage-title{font-weight:500;color:var(--green);font-size:13px;margin-bottom:6px}
+
+.q-block{padding:14px 16px;border-bottom:1px solid #F0EDE6}
+.q-block:last-child{border-bottom:none;padding-bottom:16px}
+.q-num{font-size:11px;font-weight:500;color:var(--green-mid);letter-spacing:.05em;margin-bottom:6px}
+.q-text{font-size:14.5px;line-height:1.85;color:var(--text);margin-bottom:10px}
+
+.options{display:flex;flex-direction:column;gap:8px}
+.option{display:flex;align-items:center;border:1.5px solid var(--gray-light);border-radius:var(--r-sm);overflow:hidden;cursor:pointer;transition:border-color .2s,background .15s;min-height:50px}
+.option-letter{width:44px;min-width:44px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--muted);border-right:1px solid var(--gray-light);align-self:stretch;background:var(--gray-pale);transition:all .15s;flex-shrink:0}
+.option-text{padding:12px 12px;font-size:14px;line-height:1.6;flex:1}
+.option.selected{border-color:var(--green-mid);background:var(--green-light)}
+.option.selected .option-letter{background:var(--green-mid);color:#fff;border-color:var(--green-mid)}
+.option.correct{border-color:#3B6D11;background:#EAF3DE}
+.option.correct .option-letter{background:#3B6D11;color:#fff;border-color:#3B6D11}
+.option.wrong{border-color:var(--red);background:var(--red-light)}
+.option.wrong .option-letter{background:var(--red);color:#fff;border-color:var(--red)}
+
+textarea{width:100%;border:1.5px solid var(--gray-light);border-radius:var(--r-sm);padding:12px 14px;font-family:'Noto Sans TC',sans-serif;font-size:15px;line-height:1.85;resize:vertical;min-height:100px;outline:none;transition:border-color .2s;color:var(--text)}
+textarea:focus{border-color:var(--green-mid)}
+.char-info{display:flex;justify-content:flex-end;gap:6px;margin-top:5px}
+.char-count{font-size:11.5px;color:var(--muted)}
+.char-warn{font-size:11px;color:var(--red);display:none}
+
+.fill-input{width:100%;border:1.5px solid var(--gray-light);border-radius:var(--r-sm);padding:12px 14px;font-family:'Noto Sans TC',sans-serif;font-size:15px;outline:none;transition:border-color .2s;color:var(--text)}
+.fill-input:focus{border-color:var(--green-mid)}
+
+.essay-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.essay-tab{padding:12px 8px;border:1.5px solid var(--gray-light);border-radius:var(--r-sm);background:#fff;font-family:'Noto Sans TC',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;text-align:center;line-height:1.4;transition:all .15s}
+.essay-tab.active{border-color:var(--green-mid);background:var(--green-light);color:var(--green);font-weight:500}
+.essay-prompt{background:var(--green-pale);border-left:3px solid var(--gray);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:12px 14px;font-size:13px;color:#444441;margin-bottom:12px;line-height:1.85;display:none}
+.essay-prompt.show{display:block}
+.essay-prompt strong{color:var(--green)}
+
+.voice-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border:1.5px dashed var(--green-mid);border-radius:var(--r-sm);background:var(--green-pale);color:var(--green);font-family:'Noto Sans TC',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:8px}
+.voice-btn.recording{background:var(--red-light);border-color:var(--red);color:var(--red);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.mic-icon{width:20px;height:20px;flex-shrink:0}
+.voice-status{font-size:11.5px;color:var(--muted);text-align:center;margin-top:5px;min-height:16px}
+.voice-status.active{color:var(--red)}
+.no-voice-msg{font-size:12px;color:var(--muted);padding:8px 12px;background:#F8F7F4;border-radius:var(--r-sm);border:1px solid var(--gray-light);display:none}
+
+.submit-wrap{padding:0 12px calc(16px + var(--safe-b));max-width:600px;margin:0 auto}
+.submit-btn{width:100%;padding:16px;background:var(--green);color:#E1F5EE;border:none;border-radius:var(--r);font-family:'Noto Sans TC',sans-serif;font-size:16px;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.06em}
+.submit-btn:active{transform:scale(.98)}
+.submit-btn:disabled{background:var(--gray);cursor:not-allowed}
+.msg{margin-top:10px;padding:12px 14px;border-radius:var(--r-sm);font-size:14px;line-height:1.6;display:none}
+.msg.success{background:#EAF3DE;color:#3B6D11;border:1px solid #639922;display:block}
+.msg.error{background:var(--red-light);color:var(--red);border:1px solid var(--red);display:block}
+.msg.loading{background:var(--green-pale);color:var(--green);border:1px solid var(--green-mid);display:flex;align-items:center;gap:10px}
+
+/* Loading spinner */
+.spinner{width:18px;height:18px;border:2px solid var(--green-light);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── AI 批改結果卡片 ── */
+.result-wrap{margin-top:12px;display:none}
+.result-wrap.show{display:block}
+.result-card{background:#fff;border-radius:var(--r);border:1px solid #E8E6DF;margin-bottom:10px;overflow:hidden}
+.result-card-header{background:var(--green);color:#fff;padding:10px 16px;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center}
+.result-card-body{padding:0}
+
+.score-row{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;border-bottom:1px solid #F4F2EC}
+.score-row:last-child{border-bottom:none}
+.score-row-label{font-size:12px;color:var(--muted);flex-shrink:0;width:62px;padding-top:1px}
+.score-row-content{flex:1}
+.score-row-answer{font-size:13px;color:var(--text);line-height:1.7;margin-bottom:4px}
+.score-row-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.score-pill{font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.pill-high{background:#EAF3DE;color:#3B6D11}
+.pill-mid{background:var(--amber-light);color:var(--amber)}
+.pill-low{background:var(--red-light);color:var(--red)}
+.pill-mc-ok{background:#EAF3DE;color:#3B6D11}
+.pill-mc-err{background:var(--red-light);color:var(--red)}
+.feedback-text{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* Total score banner */
+.total-banner{background:var(--green);border-radius:var(--r);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.total-label{font-family:'Noto Serif TC',serif;color:#9FE1CB;font-size:13px}
+.total-score{font-family:'Noto Serif TC',serif;color:#fff;font-size:2rem;font-weight:700;line-height:1}
+.total-max{color:#9FE1CB;font-size:14px;font-weight:400}
+.score-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.breakdown-item{background:#fff;border:1px solid #E8E6DF;border-radius:var(--r-sm);padding:10px 12px;text-align:center}
+.breakdown-num{font-size:1.3rem;font-weight:500;color:var(--green);font-family:'Noto Serif TC',serif}
+.breakdown-label{font-size:11px;color:var(--muted);margin-top:2px}
+
+.required::after{content:'＊';color:var(--red);font-size:10px;margin-left:2px;vertical-align:top}
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-bottom:6px}
+.field input{width:100%;border:1.5px solid var(--gray-light);border-radius:var(--r-sm);padding:12px 14px;font-family:'Noto Sans TC',sans-serif;font-size:15px;color:var(--text);background:#fff;outline:none;transition:border-color .2s;appearance:none}
+.field input:focus{border-color:var(--green-mid)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">食品營養華語文獻閱讀 II｜期中考</div>
+  <div class="header-sub">美和科技大學 · 114學年度第2學期 · 葉泰聖老師</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="progress-label" id="progressLabel">已完成 0 / 20 題</div>
+</div>
+
+<div class="container">
+
+  <!-- 學生資料 -->
+  <div class="card">
+    <div class="card-header"><span class="badge">學生資料</span></div>
+    <div class="q-block">
+      <div class="field"><label class="required">姓名</label><input type="text" id="sName" placeholder="請輸入姓名" autocomplete="name"></div>
+      <div class="field"><label class="required">學號</label><input type="text" id="sId" placeholder="請輸入學號" autocomplete="off"></div>
+      <div class="field"><label class="required">班級</label><input type="text" id="sClass" placeholder="例：食品系一甲"></div>
+      <div class="field"><label>作答日期</label><input type="date" id="sDate"></div>
+    </div>
+  </div>
+
+  <!-- 壹：選擇題 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="badge">壹｜選擇題</span>
+      <span class="card-header-title">每題 2 分，共 20 分</span>
+    </div>
+    <div class="q-block">
+      <div class="passage">
+        <div class="passage-title">【短文一】菜單順序與減碳</div>
+        英國布里斯托大學在《Nature Food》發表了一篇研究。研究發現，在大學食堂裡，不需要更換食材，也不需要改變烹調方式，只要重新安排一週菜單中餐點出現的順序，就能讓碳足跡降低超過30%，飽和脂肪酸攝取也減少了6.3%。研究團隊把高碳足跡的餐點（例如千層麵、雞肉基輔）安排在同一天，讓它們互相競爭，這樣其他天的低碳餐點（例如扁豆辣醬、花椰菜咖哩）就更容易被選擇。最重要的是，學生的用餐滿意度幾乎沒有受到影響。
+      </div>
+    </div>
+    <div class="q-block"><div class="q-num">第 1 題</div><div class="q-text">這篇研究是在哪裡進行的？</div><div class="options" id="opts_q1"><div class="option" onclick="sel('q1','A',this)"><span class="option-letter">A</span><span class="option-text">英國的醫院</span></div><div class="option" onclick="sel('q1','B',this)"><span class="option-letter">B</span><span class="option-text">英國的大學食堂</span></div><div class="option" onclick="sel('q1','C',this)"><span class="option-letter">C</span><span class="option-text">日本的餐廳</span></div><div class="option" onclick="sel('q1','D',this)"><span class="option-letter">D</span><span class="option-text">台灣的學校</span></div></div></div>
+    <div class="q-block"><div class="q-num">第 2 題</div><div class="q-text">研究中「減碳」的方法是什麼？</div><div class="options" id="opts_q2"><div class="option" onclick="sel('q2','A',this)"><span class="option-letter">A</span><span class="option-text">更換食材</span></div><div class="option" onclick="sel('q2','B',this)"><span class="option-letter">B</span><span class="option-text">改變烹調方式</span></div><div class="option" onclick="sel('q2','C',this)"><span class="option-letter">C</span><span class="option-text">重新安排菜單順序</span></div><div class="option" onclick="sel('q2','D',this)"><span class="option-letter">D</span><span class="option-text">減少餐點數量</span></div></div></div>
+    <div class="q-block"><div class="q-num">第 3 題</div><div class="q-text">「碳足跡」在這篇文章中最可能的意思是？</div><div class="options" id="opts_q3"><div class="option" onclick="sel('q3','A',this)"><span class="option-letter">A</span><span class="option-text">走路留下的腳印</span></div><div class="option" onclick="sel('q3','B',this)"><span class="option-letter">B</span><span class="option-text">食物製造過程中產生的碳排放量</span></div><div class="option" onclick="sel('q3','C',this)"><span class="option-letter">C</span><span class="option-text">一種新的烹飪技術</span></div><div class="option" onclick="sel('q3','D',this)"><span class="option-letter">D</span><span class="option-text">食物的價格</span></div></div></div>
+    <div class="q-block"><div class="q-num">第 4 題</div><div class="q-text">為什麼要把高碳足跡的餐點安排在同一天？</div><div class="options" id="opts_q4"><div class="option" onclick="sel('q4','A',this)"><span class="option-letter">A</span><span class="option-text">因為這些餐點比較好吃</span></div><div class="option" onclick="sel('q4','B',this)"><span class="option-letter">B</span><span class="option-text">讓它們互相競爭，提高其他天低碳餐點被選擇的機會</span></div><div class="option" onclick="sel('q4','C',this)"><span class="option-letter">C</span><span class="option-text">因為學生只喜歡吃這些食物</span></div><div class="option" onclick="sel('q4','D',this)"><span class="option-letter">D</span><span class="option-text">因為這些餐點比較便宜</span></div></div></div>
+    <div class="q-block"><div class="passage"><div class="passage-title">【短文二】加工蝦仁的誤解</div>很多台灣人聽過「泡藥蝦仁」這個說法，認為蝦仁口感比較Q彈就是因為泡了藥。但這個說法其實不太正確。台灣自2008年起已經全面禁止在食品中使用硼砂。至於磷酸鹽，法規規定不能加在直接賣給消費者的「生鮮蝦仁」裡面，但如果是「調理加工品」，在合法範圍內使用是被允許的。所以，超市裡標示為「白蝦仁（調理品）」的產品，如果有添加磷酸鹽，只要在合法用量內並有正確標示，就不算違法。</div></div>
+    <div class="q-block"><div class="q-num">第 5 題</div><div class="q-text">台灣從什麼時候開始禁止在食品中使用硼砂？</div><div class="options" id="opts_q5"><div class="option" onclick="sel('q5','A',this)"><span class="option-letter">A</span><span class="option-text">2018年</span></div><div class="option" onclick="sel('q5','B',this)"><span class="option-letter">B</span><span class="option-text">2026年</span></div><div class="option" onclick="sel('q5','C',this)"><span class="option-letter">C</span><span class="option-text">2008年</span></div><div class="option" onclick="sel('q5','D',this)"><span class="option-letter">D</span><span class="option-text">1998年</span></div></div></div>
+    <div class="q-block"><div class="q-num">第 6 題</div><div class="q-text">下列哪一種情況是合法的？</div><div class="options" id="opts_q6"><div class="option" onclick="sel('q6','A',this)"><span class="option-letter">A</span><span class="option-text">在生鮮蝦仁中加入磷酸鹽</span></div><div class="option" onclick="sel('q6','B',this)"><span class="option-letter">B</span><span class="option-text">在調理加工蝦仁中合法用量地加入磷酸鹽並正確標示</span></div><div class="option" onclick="sel('q6','C',this)"><span class="option-letter">C</span><span class="option-text">在任何蝦仁中加入硼砂</span></div><div class="option" onclick="sel('q6','D',this)"><span class="option-letter">D</span><span class="option-text">不標示就加入添加物</span></div></div></div>
+    <div class="q-block"><div class="q-num">第 7 題</div><div class="q-text">作者認為「泡藥蝦仁」這個說法有什麼問題？</div><div class="options" id="opts_q7"><div class="option" onclick="sel('q7','A',this)"><span class="option-letter">A</span><span class="option-text">這個說法完全正確</span></div><div class="option" onclick="sel('q7','B',this)"><span class="option-letter">B</span><span class="option-text">定義不正確，而且帶有強烈的負面觀感</span></div><div class="option" onclick="sel('q7','C',this)"><span class="option-letter">C</span><span class="option-text">這是一種新的烹飪方法</span></div><div class="option" onclick="sel('q7','D',this)"><span class="option-letter">D</span><span class="option-text">只有外國人才會這樣說</span></div></div></div>
+    <div class="q-block"><div class="passage"><div class="passage-title">【短文三】岩泉優格與大谷翔平</div>日本職棒明星大谷翔平以嚴格的飲食管理聞名。他在一次訪談中提到自己很喜歡家鄉岩手縣的「岩泉優格」。這句話讓這款原本只是地方品牌的優格迅速爆紅，網路銷量增長了大約7倍。岩泉優格的特色是使用「鋁袋低溫發酵」技術，發酵時間長達20小時，雖然生產成本較高，但口感有彈性，而且保留了生乳的鮮甜味道。現在這款優格已經可以在全日本47個都道府縣買到。</div></div>
+    <div class="q-block"><div class="q-num">第 8 題</div><div class="q-text">岩泉優格爆紅的主要原因是什麼？</div><div class="options" id="opts_q8"><div class="option" onclick="sel('q8','A',this)"><span class="option-letter">A</span><span class="option-text">價格很便宜</span></div><div class="option" onclick="sel('q8','B',this)"><span class="option-letter">B</span><span class="option-text">大谷翔平在訪談中提到他喜歡這款優格</span></div><div class="option" onclick="sel('q8','C',this)"><span class="option-letter">C</span><span class="option-text">政府大力推廣</span></div><div class="option" onclick="sel('q8','D',this)"><span class="option-letter">D</span><span class="option-text">在電視廣告中出現</span></div></div></div>
+    <div class="q-block"><div class="q-num">第 9 題</div><div class="q-text">岩泉優格的發酵時間是多久？</div><div class="options" id="opts_q9"><div class="option" onclick="sel('q9','A',this)"><span class="option-letter">A</span><span class="option-text">2小時</span></div><div class="option" onclick="sel('q9','B',this)"><span class="option-letter">B</span><span class="option-text">10小時</span></div><div class="option" onclick="sel('q9','C',this)"><span class="option-letter">C</span><span class="option-text">20小時</span></div><div class="option" onclick="sel('q9','D',this)"><span class="option-letter">D</span><span class="option-text">48小時</span></div></div></div>
+    <div class="q-block"><div class="q-num">第 10 題</div><div class="q-text">「地方品牌」在文中的意思最接近？</div><div class="options" id="opts_q10"><div class="option" onclick="sel('q10','A',this)"><span class="option-letter">A</span><span class="option-text">全世界都知道的品牌</span></div><div class="option" onclick="sel('q10','B',this)"><span class="option-letter">B</span><span class="option-text">只在某個地區有名的品牌</span></div><div class="option" onclick="sel('q10','C',this)"><span class="option-letter">C</span><span class="option-text">已經倒閉的品牌</span></div><div class="option" onclick="sel('q10','D',this)"><span class="option-letter">D</span><span class="option-text">政府經營的品牌</span></div></div></div>
+  </div>
+
+  <!-- 貳：簡答 -->
+  <div class="card">
+    <div class="card-header"><span class="badge">貳｜簡答題</span><span class="card-header-title">每題 5 分，共 20 分</span></div>
+    <div class="q-block"><div class="passage"><div class="passage-title">【短文四】防災食品的保存技術</div>防災食品可以在常溫下保存很長時間，很多人以為是因為加了很多防腐劑，但事實上並不是這樣。防災食品能長期保存的關鍵在於食品加工與包裝設計的整體配合：控制水活性（降低水分，讓微生物不容易生長）、高溫高壓殺菌、調整酸鹼值，再加上隔絕氧氣和避光的包裝技術。這些方法結合在一起，就能讓食物在沒有防腐劑的情況下，長時間不會腐敗變質。</div></div>
+    <div class="q-block"><div class="q-num">第 11 題（5分）</div><div class="q-text">請說明防災食品能夠長期保存的兩個主要技術或方法，並用自己的話解釋。</div><textarea id="q11" placeholder="請輸入您的答案（2～3句）" rows="4" oninput="cc(this,'c11')"></textarea><div class="char-info"><span class="char-count" id="c11">0 字</span></div></div>
+    <div class="q-block"><div class="q-num">第 12 題（5分）</div><div class="q-text">為什麼很多人會誤以為防災食品加了很多防腐劑？請根據短文內容和你自己的想法回答。</div><textarea id="q12" placeholder="請輸入您的答案（2～3句）" rows="4" oninput="cc(this,'c12')"></textarea><div class="char-info"><span class="char-count" id="c12">0 字</span></div></div>
+    <div class="q-block"><div class="passage"><div class="passage-title">【短文五】Beyond Meat 的新方向</div>植物肉品牌 Beyond Meat 近年來面臨市場降溫的挑戰。為了尋找新的發展方向，Beyond Meat 推出了「氣泡蛋白飲」，切入機能營養市場。這代表植物肉品牌不再只專注於模仿肉類的口感和外觀，而是開始利用植物蛋白的營養優勢，開發不同類型的產品，試圖吸引更多注重健康和營養的消費者。</div></div>
+    <div class="q-block"><div class="q-num">第 13 題（5分）</div><div class="q-text">Beyond Meat 為什麼要推出氣泡蛋白飲？請根據短文說明原因。</div><textarea id="q13" placeholder="請輸入您的答案（2～3句）" rows="4" oninput="cc(this,'c13')"></textarea><div class="char-info"><span class="char-count" id="c13">0 字</span></div></div>
+    <div class="q-block"><div class="q-num">第 14 題（5分）</div><div class="q-text">你認為「植物肉」和「氣泡蛋白飲」，哪一種比較容易吸引年輕人？請說明理由。</div><textarea id="q14" placeholder="請輸入您的答案（2～3句）" rows="4" oninput="cc(this,'c14')"></textarea><div class="char-info"><span class="char-count" id="c14">0 字</span></div></div>
+  </div>
+
+  <!-- 參：詞彙語法 -->
+  <div class="card">
+    <div class="card-header"><span class="badge">參｜詞彙與語法</span><span class="card-header-title">每題 2 分，共 20 分</span></div>
+    <div class="q-block"><div class="q-num">第 15 題</div><div class="q-text">請選出「實證」最接近的意思：</div><div class="options" id="opts_q15"><div class="option" onclick="sel('q15','A',this)"><span class="option-letter">A</span><span class="option-text">實際證明</span></div><div class="option" onclick="sel('q15','B',this)"><span class="option-letter">B</span><span class="option-text">真實的證件</span></div><div class="option" onclick="sel('q15','C',this)"><span class="option-letter">C</span><span class="option-text">實在的證人</span></div><div class="option" onclick="sel('q15','D',this)"><span class="option-letter">D</span><span class="option-text">實用的證書</span></div></div></div>
+    <div class="q-block"><div class="q-num">第 16 題</div><div class="q-text">「在不更換食材、不改烹調的前提下」，「前提」的意思是：</div><div class="options" id="opts_q16"><div class="option" onclick="sel('q16','A',this)"><span class="option-letter">A</span><span class="option-text">之前提過的話</span></div><div class="option" onclick="sel('q16','B',this)"><span class="option-letter">B</span><span class="option-text">事先必須具備的條件</span></div><div class="option" onclick="sel('q16','C',this)"><span class="option-letter">C</span><span class="option-text">前面的提示</span></div><div class="option" onclick="sel('q16','D',this)"><span class="option-letter">D</span><span class="option-text">提前準備</span></div></div></div>
+    <div class="q-block"><div class="q-num">第 17 題</div><div class="q-text">「這款優格迅速爆紅」，「爆紅」的意思是：</div><div class="options" id="opts_q17"><div class="option" onclick="sel('q17','A',this)"><span class="option-letter">A</span><span class="option-text">爆炸後變紅色</span></div><div class="option" onclick="sel('q17','B',this)"><span class="option-letter">B</span><span class="option-text">突然變得非常受歡迎</span></div><div class="option" onclick="sel('q17','C',this)"><span class="option-letter">C</span><span class="option-text">紅色的爆米花</span></div><div class="option" onclick="sel('q17','D',this)"><span class="option-letter">D</span><span class="option-text">慢慢變有名</span></div></div></div>
+    <div class="q-block"><div class="q-num">第 18 題</div><div class="q-text">請用「不是……而是……」完成句子：<br><span style="color:var(--green);font-size:13px">防災食品能長期保存，</span></div><input type="text" id="q18" class="fill-input" placeholder="不是……而是……" oninput="updateProg()"></div>
+    <div class="q-block"><div class="q-num">第 19 題</div><div class="q-text">請用「只要……就能……」完成句子（主題：菜單順序與減碳）：</div><input type="text" id="q19" class="fill-input" placeholder="只要……就能……" oninput="updateProg()"></div>
+    <div class="q-block"><div class="q-num">第 20 題</div><div class="q-text">請選出正確的句子：</div><div class="options" id="opts_q20"><div class="option" onclick="sel('q20','A',this)"><span class="option-letter">A</span><span class="option-text">蝦仁口感Q彈，就是一定泡了藥。</span></div><div class="option" onclick="sel('q20','B',this)"><span class="option-letter">B</span><span class="option-text">合法的食品添加物在規定用量內使用，並不等於違法。</span></div><div class="option" onclick="sel('q20','C',this)"><span class="option-letter">C</span><span class="option-text">所有的蝦仁都不可以加任何東西。</span></div><div class="option" onclick="sel('q20','D',this)"><span class="option-letter">D</span><span class="option-text">硼砂是台灣目前合法的食品添加物。</span></div></div></div>
+  </div>
+
+  <!-- 肆：寫作 -->
+  <div class="card">
+    <div class="card-header"><span class="badge">肆｜寫作題</span><span class="card-header-title">40 分，選一題，150～250 字</span></div>
+    <div class="q-block">
+      <div class="q-num">選擇題目</div>
+      <div class="essay-tabs">
+        <button class="essay-tab" id="tabA" onclick="pickEssay('A')">題目 A<br><span style="font-size:11px;font-weight:400">名人推薦與食品銷售</span></button>
+        <button class="essay-tab" id="tabB" onclick="pickEssay('B')">題目 B<br><span style="font-size:11px;font-weight:400">防腐劑與食品安全</span></button>
+      </div>
+      <div class="essay-prompt" id="promptA"><strong>題目 A：</strong>你覺得「名人推薦」對食品銷售的影響大嗎？請以岩泉優格的例子說明你的看法，並舉出你自己生活中的例子。</div>
+      <div class="essay-prompt" id="promptB"><strong>題目 B：</strong>有人說「能放很久的食物一定加了很多防腐劑」，你同意嗎？請根據防災食品的例子說明你的看法，並說說你對食品安全的想法。</div>
+      <input type="hidden" id="essayChoice" value="">
+      <textarea id="essayText" placeholder="請先選擇題目 A 或 B，再開始作答（150～250字）" rows="8" disabled oninput="essayCC()"></textarea>
+      <div class="char-info"><span class="char-count" id="essayCount">0 字</span><span class="char-warn" id="essayWarn">（請寫 150～250 字）</span></div>
+      <div id="voiceSection">
+        <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" disabled>
+          <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          <span id="voiceBtnText">點此語音輸入</span>
+        </button>
+        <div class="voice-status" id="voiceStatus"></div>
+        <div class="no-voice-msg" id="noVoiceMsg">此裝置不支援語音輸入，請改用 Chrome / Safari 瀏覽器，或直接以鍵盤輸入。</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<div class="submit-wrap">
+  <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">繳交試卷</button>
+  <div class="msg" id="statusMsg"></div>
+
+  <!-- AI 批改結果 -->
+  <div class="result-wrap" id="resultWrap">
+
+    <div class="total-banner">
+      <div><div class="total-label">本次考試總分</div><div style="color:#9FE1CB;font-size:11px;margin-top:2px">AI 自動批改（僅供參考，以老師最終成績為準）</div></div>
+      <div style="text-align:right"><span class="total-score" id="totalScore">—</span><span class="total-max"> / 100</span></div>
+    </div>
+
+    <div class="score-breakdown">
+      <div class="breakdown-item"><div class="breakdown-num" id="bdS1">—</div><div class="breakdown-label">壹 選擇 /20</div></div>
+      <div class="breakdown-item"><div class="breakdown-num" id="bdS2">—</div><div class="breakdown-label">貳 簡答 /20</div></div>
+      <div class="breakdown-item"><div class="breakdown-num" id="bdS3">—</div><div class="breakdown-label">參 詞彙語法 /20</div></div>
+      <div class="breakdown-item"><div class="breakdown-num" id="bdS4">—</div><div class="breakdown-label">肆 寫作 /40</div></div>
+    </div>
+
+    <!-- 選擇題 -->
+    <div class="result-card">
+      <div class="result-card-header"><span>壹 + 參｜選擇題批改結果</span><span id="mcScoreLabel"></span></div>
+      <div class="result-card-body" id="mcDetailRows"></div>
+    </div>
+
+    <!-- 簡答題 -->
+    <div class="result-card">
+      <div class="result-card-header"><span>貳｜簡答題 AI 批改</span><span id="shortScoreLabel"></span></div>
+      <div class="result-card-body" id="shortRows"></div>
+    </div>
+
+    <!-- 語法填空 -->
+    <div class="result-card">
+      <div class="result-card-header"><span>參｜語法填空 AI 批改</span><span id="fillScoreLabel"></span></div>
+      <div class="result-card-body" id="fillRows"></div>
+    </div>
+
+    <!-- 寫作 -->
+    <div class="result-card">
+      <div class="result-card-header"><span>肆｜寫作題 AI 批改</span><span id="essayScoreLabel"></span></div>
+      <div class="result-card-body" id="essayRow"></div>
+    </div>
+
+    <div style="font-size:11.5px;color:var(--muted);text-align:center;padding:8px 0 4px">AI 批改結果僅供參考，老師可在試算表中調整分數</div>
+  </div>
+</div>
+
+<script>
+// ===== 填入 GAS 部署網址 =====
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzp3UJEa-e8a-DrVtTsC8iyMif-6yyAw8thy5rj2CKJka9yAzejgYZ1-Klj9ptmNYgE/exec';
+// ============================
+
+const AK = {q1:'B',q2:'C',q3:'B',q4:'B',q5:'C',q6:'B',q7:'B',q8:'B',q9:'C',q10:'B',q15:'A',q16:'B',q17:'B',q20:'B'};
+const MCQ = Object.keys(AK);
+const ans = {};
+
+document.getElementById('sDate').valueAsDate = new Date();
+
+function sel(q, v, el) {
+  document.getElementById('opts_'+q).querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected'); ans[q]=v; updateProg();
+}
+function cc(el, id) { document.getElementById(id).textContent=el.value.length+' 字'; updateProg(); }
+function essayCC() {
+  const n=document.getElementById('essayText').value.length;
+  document.getElementById('essayCount').textContent=n+' 字';
+  document.getElementById('essayWarn').style.display=(n>0&&(n<150||n>250))?'inline':'none';
+  updateProg();
+}
+function pickEssay(c) {
+  ['A','B'].forEach(x=>{
+    document.getElementById('tab'+x).classList.toggle('active',c===x);
+    document.getElementById('prompt'+x).classList.toggle('show',c===x);
+  });
+  document.getElementById('essayChoice').value=c;
+  const ta=document.getElementById('essayText');
+  ta.disabled=false; ta.placeholder='請在此輸入作文（150～250字）';
+  document.getElementById('voiceBtn').disabled=false;
+  updateProg();
+}
+function updateProg() {
+  let d=0;
+  MCQ.forEach(q=>{if(ans[q])d++;});
+  ['q11','q12','q13','q14'].forEach(q=>{if(document.getElementById(q)?.value.trim())d++;});
+  ['q18','q19'].forEach(q=>{if(document.getElementById(q)?.value.trim())d++;});
+  if(document.getElementById('essayText')?.value.trim())d++;
+  if(document.getElementById('essayChoice')?.value)d++;
+  const pct=Math.min(d/20*100,100);
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('progressLabel').textContent=`已完成 ${Math.min(d,20)} / 20 題`;
+}
+
+// ── Voice ──
+let recog=null,isRec=false;
+function initVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('noVoiceMsg').style.display='block';document.getElementById('voiceBtn').style.display='none';return;}
+  recog=new SR(); recog.lang='zh-TW'; recog.continuous=true; recog.interimResults=true;
+  let fin='';
+  recog.onstart=()=>{isRec=true;fin=document.getElementById('essayText').value;document.getElementById('voiceBtn').classList.add('recording');document.getElementById('voiceBtnText').textContent='點此停止錄音';document.getElementById('voiceStatus').textContent='🔴 錄音中…';document.getElementById('voiceStatus').classList.add('active');}
+  recog.onresult=(e)=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=t;else interim=t;}document.getElementById('essayText').value=fin+interim;essayCC();}
+  recog.onerror=(e)=>{stopRec();const m={not_allowed:'請允許麥克風權限',no_speech:'未偵測到聲音，請重試',network:'網路錯誤'};document.getElementById('voiceStatus').textContent=m[e.error]||'錯誤：'+e.error;}
+  recog.onend=()=>stopRec();
+}
+function toggleVoice(){if(!recog)initVoice();if(!recog)return;isRec?recog.stop():recog.start();}
+function stopRec(){isRec=false;document.getElementById('voiceBtn').classList.remove('recording');document.getElementById('voiceBtnText').textContent='點此語音輸入';document.getElementById('voiceStatus').textContent='已停止';document.getElementById('voiceStatus').classList.remove('active');setTimeout(()=>document.getElementById('voiceStatus').textContent='',2000);}
+initVoice();
+
+// ── Submit ──
+function showMsg(type,text){const m=document.getElementById('statusMsg');m.className='msg '+type;if(type==='loading'){m.innerHTML=`<div class="spinner"></div><span>${text}</span>`;}else{m.textContent=text;}m.scrollIntoView({behavior:'smooth',block:'nearest'});}
+
+function validate(){
+  const n=document.getElementById('sName').value.trim(),id=document.getElementById('sId').value.trim(),c=document.getElementById('sClass').value.trim();
+  if(!n||!id||!c){showMsg('error','請填寫姓名、學號與班級。');return false;}
+  if(!document.getElementById('essayChoice').value){showMsg('error','請選擇寫作題的題目（A 或 B）。');return false;}
+  if(document.getElementById('essayText').value.trim().length<50){showMsg('error','寫作題字數不足，請至少寫 50 字。');return false;}
+  return true;
+}
+
+async function submitQuiz(){
+  if(isRec)recog.stop();
+  if(!validate())return;
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true; btn.textContent='AI 批改中…';
+  showMsg('loading','AI 正在批改您的試卷，請稍候約 10～15 秒……');
+
+  const payload={
+    timestamp:new Date().toLocaleString('zh-TW'),
+    studentName:document.getElementById('sName').value.trim(),
+    studentId:document.getElementById('sId').value.trim(),
+    studentClass:document.getElementById('sClass').value.trim(),
+    examDate:document.getElementById('sDate').value,
+    ...Object.fromEntries(MCQ.map(q=>[q,ans[q]||''])),
+    q11:document.getElementById('q11').value.trim(),
+    q12:document.getElementById('q12').value.trim(),
+    q13:document.getElementById('q13').value.trim(),
+    q14:document.getElementById('q14').value.trim(),
+    q18:document.getElementById('q18').value.trim(),
+    q19:document.getElementById('q19').value.trim(),
+    essayChoice:document.getElementById('essayChoice').value,
+    essay:document.getElementById('essayText').value.trim()
+  };
+
+  try{
+    const r=await fetch(GAS_URL,{method:'POST',body:JSON.stringify(payload)});
+    const res=await r.json();
+    if(res.status==='success'){
+      showMsg('success','✓ 試卷繳交成功！AI 批改完成，結果如下（請截圖保存）。');
+      renderResults(res);
+      btn.textContent='已繳交';
+      lockAll();
+    } else throw new Error(res.message||'未知錯誤');
+  }catch(e){
+    showMsg('error','繳交失敗：'+e.message+'。請稍後再試或聯絡老師。');
+    btn.disabled=false; btn.textContent='繳交試卷';
+  }
+}
+
+function pill(score,max){
+  const pct=score/max;
+  const cls=pct>=0.8?'pill-high':pct>=0.5?'pill-mid':'pill-low';
+  return `<span class="score-pill ${cls}">${score}／${max} 分</span>`;
+}
+
+function renderResults(res){
+  const mc=res.mcDetail, ai=res.aiResult;
+  const mcTotal=res.mcScore;
+  const s1=Object.keys(AK).filter(q=>['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10'].includes(q)).reduce((a,q)=>a+(mc[q].ok?2:0),0);
+  const s3mc=Object.keys(AK).filter(q=>['q15','q16','q17','q20'].includes(q)).reduce((a,q)=>a+(mc[q].ok?2:0),0);
+  const s3fill=(ai.q18.score||0)+(ai.q19.score||0);
+  const s3=s3mc+s3fill;
+  const s2=(ai.q11.score||0)+(ai.q12.score||0)+(ai.q13.score||0)+(ai.q14.score||0);
+  const s4=ai.essay.score||0;
+  const total=s1+s2+s3+s4;
+
+  document.getElementById('totalScore').textContent=total;
+  document.getElementById('bdS1').textContent=s1;
+  document.getElementById('bdS2').textContent=s2;
+  document.getElementById('bdS3').textContent=s3;
+  document.getElementById('bdS4').textContent=s4;
+  document.getElementById('mcScoreLabel').textContent=mcTotal+' / 28 分';
+  document.getElementById('shortScoreLabel').textContent=s2+' / 20 分';
+  document.getElementById('fillScoreLabel').textContent=s3fill+' / 4 分';
+  document.getElementById('essayScoreLabel').textContent=s4+' / 40 分';
+
+  const qlabels={q1:'Q1',q2:'Q2',q3:'Q3',q4:'Q4',q5:'Q5',q6:'Q6',q7:'Q7',q8:'Q8',q9:'Q9',q10:'Q10',q15:'Q15',q16:'Q16',q17:'Q17',q20:'Q20'};
+  document.getElementById('mcDetailRows').innerHTML=Object.keys(AK).map(q=>{
+    const d=mc[q]; const ok=d.ok;
+    return `<div class="score-row">
+      <span class="score-row-label">${qlabels[q]}</span>
+      <div class="score-row-content">
+        <div class="score-row-meta">
+          <span class="score-pill ${ok?'pill-mc-ok':'pill-mc-err'}">${ok?'✓ 正確':'✗ 錯誤'}</span>
+          <span style="font-size:12px;color:var(--muted)">你的答案：${d.ans||'未作答'}${!ok?' → 正確：'+AK[q]:''}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const shortQs=[{id:'q11',label:'Q11',max:5},{id:'q12',label:'Q12',max:5},{id:'q13',label:'Q13',max:5},{id:'q14',label:'Q14',max:5}];
+  document.getElementById('shortRows').innerHTML=shortQs.map(q=>`
+    <div class="score-row">
+      <span class="score-row-label">${q.label}</span>
+      <div class="score-row-content">
+        <div class="score-row-answer">${document.getElementById(q.id).value.trim().slice(0,60)}${document.getElementById(q.id).value.trim().length>60?'…':''}</div>
+        <div class="score-row-meta">${pill(ai[q.id].score,q.max)}<span class="feedback-text">${ai[q.id].feedback}</span></div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('fillRows').innerHTML=`
+    <div class="score-row"><span class="score-row-label">Q18</span><div class="score-row-content"><div class="score-row-answer">${document.getElementById('q18').value.trim()||'（未作答）'}</div><div class="score-row-meta">${pill(ai.q18.score,2)}<span class="feedback-text">${ai.q18.feedback}</span></div></div></div>
+    <div class="score-row"><span class="score-row-label">Q19</span><div class="score-row-content"><div class="score-row-answer">${document.getElementById('q19').value.trim()||'（未作答）'}</div><div class="score-row-meta">${pill(ai.q19.score,2)}<span class="feedback-text">${ai.q19.feedback}</span></div></div></div>`;
+
+  document.getElementById('essayRow').innerHTML=`
+    <div class="score-row"><span class="score-row-label">選${document.getElementById('essayChoice').value}</span><div class="score-row-content"><div class="score-row-meta">${pill(ai.essay.score,40)}</div><div class="score-row-answer" style="margin-top:6px;font-size:13px;color:var(--muted)">${ai.essay.feedback}</div></div></div>`;
+
+  document.getElementById('resultWrap').classList.add('show');
+  setTimeout(()=>document.getElementById('resultWrap').scrollIntoView({behavior:'smooth'}),300);
+}
+
+function lockAll(){
+  document.querySelectorAll('input,textarea').forEach(el=>el.disabled=true);
+  document.querySelectorAll('.option').forEach(el=>el.style.pointerEvents='none');
+  document.getElementById('voiceBtn').disabled=true;
+  document.querySelectorAll('.essay-tab').forEach(el=>el.disabled=true);
+}
+</script>
+</body>
+</html>
